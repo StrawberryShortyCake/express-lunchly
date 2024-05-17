@@ -11,8 +11,20 @@ const router = new express.Router();
 /** Homepage: show list of customers. */
 
 router.get("/", async function (req, res, next) {
-  const customers = await Customer.all();
-  return res.render("customer_list.jinja", { customers });
+
+  if (!req.query.search) {
+    const customers = await Customer.all();
+    return res.render("customer_list.jinja", { customers });
+
+  } else {
+    const searchPhrase = req.query.search;
+    const searchKeys = searchPhrase.split(" ");
+    console.log("SEARCHHHHH", searchPhrase, searchKeys);
+
+    const customers = await Customer.search(searchKeys);
+
+    return res.render("customer_list.jinja", { customers });
+  }
 });
 
 /** Form to add a new customer. */

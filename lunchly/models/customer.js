@@ -62,31 +62,40 @@ class Customer {
 
   /** get an array of customers based on an array of string inputs. */
 
-  async customers(searchKeys) {
+  //TODO: chat through the idea of combining with all()
+  static async search(searchKeys) {
 
-    const resultsArray = [];
-    const first_name = resultsArray[0];
-    const last_name = resultsArray[1];
+    const first_value = searchKeys[0];
+    const second_value = searchKeys[1];
 
-    /**TODO: ask about the implication / approach of partial search
-      searchKeys.map((str) => async function () {
-      resultsArray.push(result);
-    });*/
-    // check string length (1 for partial match and >1 for exact match)
-
-    const result = await db.query(
-      `SELECT id,
+    if (searchKeys.length === 1) {
+      const results = await db.query(
+        `SELECT id,
                   first_name AS "firstName",
                   last_name  AS "lastName",
                   phone,
                   notes
            FROM customers
            WHERE first_name LIKE $1
-           OR last_name LIKE $2`,
-      [first_name, last_name],
-    );
+           OR last_name LIKE $1`,
+        [`${first_value}%`],
+      );
+      return results.rows.map(c => new Customer(c));
+    } else {
+      const results = await db.query(
+        `SELECT id,
+                  first_name AS "firstName",
+                  last_name  AS "lastName",
+                  phone,
+                  notes
+           FROM customers
+           WHERE first_name LIKE $1
+           AND last_name LIKE $2`,
+        [`${first_value}%`, `${second_value}%`],
+      );
+      return results.rows.map(c => new Customer(c));
+    }
 
-    // TODO: complete this
   }
 
 
