@@ -14,6 +14,19 @@ class Reservation {
     this.notes = notes;
   }
 
+  /**  */
+  get numGuests() {
+    return this._numGuests;
+  }
+
+  /**  */
+  set numGuests(val) {
+    if (val < 1) {
+      throw new Error("Can't reserve for fewer than 1 person");
+    }
+    this._numGuests = val;
+  }
+
   /** formatter for startAt */
 
   getFormattedStartAt() {
