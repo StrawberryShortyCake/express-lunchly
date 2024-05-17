@@ -60,6 +60,33 @@ class Customer {
     return await Reservation.getReservationsForCustomer(this.id);
   }
 
+  /** get an array of customers based on an array of string inputs. */
+
+  async customers(searchKeys) {
+
+    const resultsArray = [];
+
+    searchKeys.map((str) => async function () {
+      const result = await db.query(
+        `SELECT id,
+                  first_name AS "firstName",
+                  last_name  AS "lastName",
+                  phone,
+                  notes
+           FROM customers
+           WHERE first_name LIKE $1
+           OR last_name LIKE $1`,
+        [str],
+      );
+      resultsArray.push(result);
+    });
+
+
+
+    return await Reservation.getReservationsForCustomer(this.id);
+  }
+
+
   /** get the full name of the customer */
 
   fullName() {

@@ -17,7 +17,7 @@ class Reservation {
   /** formatter for startAt */
 
   getFormattedStartAt() {
-    datefns.format(this.startAt, "MMMM d yyyy, h:mm a")
+    datefns.format(this.startAt, "MMMM d yyyy, h:mm a");
   }
 
   /** given a customer id, find their reservations. */
@@ -36,6 +36,9 @@ class Reservation {
 
     return results.rows.map(row => new Reservation(row));
   }
+
+
+  /** save the reservation */
 
   async save() {
     if (this.id === undefined) {
