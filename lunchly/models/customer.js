@@ -65,25 +65,27 @@ class Customer {
   async customers(searchKeys) {
 
     const resultsArray = [];
+    const first_name = resultsArray[0];
+    const last_name = resultsArray[1];
 
-    searchKeys.map((str) => async function () {
-      const result = await db.query(
-        `SELECT id,
+    /**TODO: ask about the implication / approach of partial search
+      searchKeys.map((str) => async function () {
+      resultsArray.push(result);
+    });*/
+
+    const result = await db.query(
+      `SELECT id,
                   first_name AS "firstName",
                   last_name  AS "lastName",
                   phone,
                   notes
            FROM customers
            WHERE first_name LIKE $1
-           OR last_name LIKE $1`,
-        [str],
-      );
-      resultsArray.push(result);
-    });
+           OR last_name LIKE $2`,
+      [first_name, last_name],
+    );
 
-
-
-    return await Reservation.getReservationsForCustomer(this.id);
+    // TODO: complete this
   }
 
 
