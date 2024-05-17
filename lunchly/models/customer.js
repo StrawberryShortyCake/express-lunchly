@@ -72,6 +72,7 @@ class Customer {
       searchKeys.map((str) => async function () {
       resultsArray.push(result);
     });*/
+    // check string length (1 for partial match and >1 for exact match)
 
     const result = await db.query(
       `SELECT id,
