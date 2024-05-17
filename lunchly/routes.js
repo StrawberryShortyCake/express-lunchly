@@ -12,18 +12,22 @@ const router = new express.Router();
 
 router.get("/", async function (req, res, next) {
 
+  let title;
+
   if (!req.query.search) {
+    title = "Customers";
     const customers = await Customer.all();
-    return res.render("customer_list.jinja", { customers });
+    return res.render("customer_list.jinja", { customers, title });
 
   } else {
+    title = "Search Result";
     const searchPhrase = req.query.search;
     const searchKeys = searchPhrase.split(" ");
     console.log("SEARCHHHHH", searchPhrase, searchKeys);
 
     const customers = await Customer.search(searchKeys);
 
-    return res.render("customer_list.jinja", { customers });
+    return res.render("customer_list.jinja", { customers, title });
   }
 });
 
@@ -44,6 +48,17 @@ router.post("/add/", async function (req, res, next) {
   await customer.save();
 
   return res.redirect(`/${customer.id}/`);
+});
+
+/** Get the top-ten customers by number of reservations */
+
+router.get("/top-ten/", async function (req, res) {
+  const title = "Top-Ten Customers";
+
+  const customers = await Customer.getTopTen();
+
+  return res.render("customer_list.jinja", { customers, title });
+
 });
 
 /** Show a customer, given their ID. */

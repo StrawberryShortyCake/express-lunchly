@@ -77,7 +77,8 @@ class Customer {
                   notes
            FROM customers
            WHERE first_name LIKE $1
-           OR last_name LIKE $1`,
+           OR last_name LIKE $1
+           ORDER BY last_name, first_name`,
         [`${first_value}%`],
       );
       return results.rows.map(c => new Customer(c));
@@ -90,12 +91,33 @@ class Customer {
                   notes
            FROM customers
            WHERE first_name LIKE $1
-           AND last_name LIKE $2`,
+           AND last_name LIKE $2
+           ORDER BY last_name, first_name`,
         [`${first_value}%`, `${second_value}%`],
       );
       return results.rows.map(c => new Customer(c));
     }
 
+  }
+
+  /** Get the top-ten customers by number of reservations
+   * Returns:
+   * an array of customer instances
+  */
+  static async getTopTen() {
+    const results = await db.query(
+      `SELECT c.id,
+              c.first_name AS "firstName",
+              c.last_name  AS "lastName",
+              c.phone,
+              c.notes
+       FROM customers as c
+       JOIN reservations as r ON r.customer_id = c.id
+       GROUP BY c.id
+       ORDER BY COUNT(r.id) DESC, c.last_name, c.first_name
+       LIMIT 10`
+    );
+    return results.rows.map(c => new Customer(c));
   }
 
 
